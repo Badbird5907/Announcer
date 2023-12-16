@@ -9,6 +9,8 @@ gradient:
   color-2: 'red'
   color-3: 'yellow'
   speed: 0.1
+bungee:
+  enable: true
 returning-player:
   title-settings:
     enabled: true

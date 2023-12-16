@@ -31,6 +31,8 @@ public class ConfigManager {
     @Getter
     private static String color1, color2, color3;
     private static int index = -1;
+    @Getter
+    private static boolean enableBungee = false;
 
     public static String getNextMessage() {
         if (messages.isEmpty()) return null;
@@ -124,6 +126,7 @@ public class ConfigManager {
         color1 = getConfig().getString("gradient.color-1");
         color2 = getConfig().getString("gradient.color-2");
         color3 = getConfig().getString("gradient.color-3");
+        enableBungee = getConfig().getBoolean("bungee.enable", true);
     }
 
     public FileConfiguration getConfig() {

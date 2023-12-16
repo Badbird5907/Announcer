@@ -4,7 +4,6 @@ import com.semivanilla.announcer.Announcer;
 import com.semivanilla.announcer.animation.Animation;
 import com.semivanilla.announcer.animation.impl.GradientAnimation;
 import com.semivanilla.announcer.object.TitleInfo;
-import com.semivanilla.announcer.util.UUIDUtil;
 import lombok.Getter;
 import net.badbird5907.blib.util.Tasks;
 import net.kyori.adventure.text.Component;
@@ -43,12 +42,12 @@ public class TitleManager {
 
     public static void update(TitleInfo info) {
         if (Bukkit.getPlayer(info.getUuid()) == null) {
-            UUIDUtil.remove(titles, info.getUuid());
+            titles.remove(info.getUuid());
             return;
         }
         Player player = Bukkit.getPlayer(info.getUuid());
         if (info.getTicksLeft() <= 0) {
-            UUIDUtil.remove(titles, info.getUuid());
+            titles.remove(info.getUuid());
             return;
         }
         info.setTicksLeft(info.getTicksLeft() - 1);
