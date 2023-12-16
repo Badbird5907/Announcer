@@ -53,6 +53,7 @@ public class ConfigManager {
     }
 
     public void loadConfig() {
+        /*
         for (String key : getConfig().getKeys(true)) {
             if (key.startsWith("messages.")) {
                 StringBuilder sb = new StringBuilder();
@@ -62,6 +63,20 @@ public class ConfigManager {
                 messages.add(sb.toString());
             }
         }
+         */
+        List<?> messagesList = getConfig().getList("messages");
+        for (Object obj : messagesList) {
+            if (obj instanceof List<?> list) {
+                StringBuilder sb = new StringBuilder();
+                for (Object o : list) {
+                    if (o instanceof String str) {
+                        sb.append(str).append("\n");
+                    }
+                }
+                messages.add(sb.toString());
+            }
+        }
+
         timeUnit = TimeUnit.valueOf(getConfig().getString("interval-time-unit"));
         interval = getConfig().getInt("interval");
         randomOrder = getConfig().getBoolean("random-message-order");
