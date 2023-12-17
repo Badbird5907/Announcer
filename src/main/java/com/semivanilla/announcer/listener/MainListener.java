@@ -3,7 +3,6 @@ package com.semivanilla.announcer.listener;
 import com.semivanilla.announcer.manager.ConfigManager;
 import com.semivanilla.announcer.manager.TitleManager;
 import com.semivanilla.announcer.object.JoinConfig;
-import net.badbird5907.blib.util.Logger;
 import net.badbird5907.blib.util.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -45,7 +44,7 @@ public class MainListener implements Listener {
             }
         }
         boolean showTitle = config.isEnableTitle() && !ConfigManager.isEnableBungee();
-        Logger.debug("Showing title to " + event.getPlayer().getName() + " title: " + config.getTitle() + " subtitle: " + config.getSubtitle() + " fadeIn: " + config.getFadeIn() + " stay: " + config.getTitleDuration() + " fadeOut: " + config.getFadeOut());
+        // Logger.debug("Showing title to " + event.getPlayer().getName() + " title: " + config.getTitle() + " subtitle: " + config.getSubtitle() + " fadeIn: " + config.getFadeIn() + " stay: " + config.getTitleDuration() + " fadeOut: " + config.getFadeOut());
         if (showTitle) {
             TitleManager.showTitle(event.getPlayer(), config.getTitle(), config.getSubtitle(), config.getFadeIn(), config.getTitleDuration(), config.getFadeOut(), true);
         }

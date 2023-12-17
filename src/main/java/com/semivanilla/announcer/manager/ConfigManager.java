@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConfigManager {
     @Getter
-    private static final List<String> messages = new ArrayList<>();
+    private static List<String> messages = new ArrayList<>();
     @Getter
     public static boolean randomOrder;
     @Getter
@@ -66,6 +66,7 @@ public class ConfigManager {
             }
         }
          */
+        messages = new ArrayList<>();
         List<?> messagesList = getConfig().getList("messages");
         for (Object obj : messagesList) {
             if (obj instanceof List<?> list) {
@@ -102,7 +103,7 @@ public class ConfigManager {
                 getConfig().getBoolean("new-player.title-settings.bedrock.enable"),
                 getConfig().getString("new-player.title-settings.bedrock.title"),
                 getConfig().getString("new-player.title-settings.bedrock.subtitle")
-                );
+        );
         returning = new JoinConfig(
                 getConfig().getBoolean("returning-player.join-sounds.enabled"),
                 getConfig().getBoolean("returning-player.title-settings.enabled"),
@@ -121,7 +122,7 @@ public class ConfigManager {
                 getConfig().getBoolean("returning-player.title-settings.bedrock.enable"),
                 getConfig().getString("returning-player.title-settings.bedrock.title"),
                 getConfig().getString("returning-player.title-settings.bedrock.subtitle")
-                );
+        );
         gradientSpeed = getConfig().getDouble("gradient.speed");
         color1 = getConfig().getString("gradient.color.1");
         color2 = getConfig().getString("gradient.color.2");

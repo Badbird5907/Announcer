@@ -13,10 +13,14 @@ import net.badbird5907.blib.util.Tasks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +37,7 @@ public final class Announcer extends JavaPlugin {
 
     @Getter
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private NamespacedKey key;
 
     @Override
     public void onLoad() {
@@ -48,11 +53,14 @@ public final class Announcer extends JavaPlugin {
         configManager.init();
         Bukkit.getLogger().info("Loaded (" + ConfigManager.getMessages().size() + ") messages!");
         Bukkit.getPluginManager().registerEvents(new MainListener(), this);
+        key = NamespacedKey.fromString("announcements_disable", this);
         Tasks.runAsyncTimer(() -> {
             String s = ConfigManager.getNextMessage();
             if (s != null) {
                 Component component = miniMessage.deserialize(s.trim());
-                Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(component));
+                Bukkit.getOnlinePlayers().stream().filter(
+                        player -> !player.getPersistentDataContainer().has(key, PersistentDataType.BYTE)
+                ).forEach(player -> player.sendMessage(component));
             }
         }, ConfigManager.getTicks(), ConfigManager.getTicks());
         new TitleUpdateRunnable().runTaskTimer(this, 10, 1);
@@ -105,5 +113,49 @@ public final class Announcer extends JavaPlugin {
             config = YamlConfiguration.loadConfiguration(new File(getDataFolder() + "/config.yml"));
         }
         return config;
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (label.equalsIgnoreCase("announcer")) {
+            if (args.length == 0) {
+                sender.sendMessage(miniMessage.deserialize("<aqua>Announcer v" + getDescription().getVersion() + " by Badbird5907"));
+                sender.sendMessage(miniMessage.deserialize("<aqua>Use /announcer reload to reload the config"));
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (!sender.hasPermission("announcer.reload")) {
+                    sender.sendMessage(miniMessage.deserialize("<red>You do not have permission to use this command!"));
+                    return true;
+                }
+                long start = System.currentTimeMillis();
+                reloadConfig();
+                configManager.loadConfig();
+                long end = System.currentTimeMillis();
+                sender.sendMessage(miniMessage.deserialize("<green>Loaded " + ConfigManager.getMessages().size() + " messages!"));
+                sender.sendMessage(miniMessage.deserialize("<green>Reloaded announcer config in " + (end - start) + "ms!"));
+                return true;
+            }
+        } else if (label.equalsIgnoreCase("toggleannouncements")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(miniMessage.deserialize("<red>Only players can use this command!"));
+                return true;
+            }
+            Player player = (Player) sender;
+            if (!player.hasPermission("announcer.toggle")) {
+                player.sendMessage(miniMessage.deserialize("<red>You do not have permission to use this command!"));
+                return true;
+            }
+            // use persistent data container to store this
+            if (key == null) throw new RuntimeException("Failed to create namespaced key");
+            if (player.getPersistentDataContainer().has(key, PersistentDataType.BYTE)) {
+                player.getPersistentDataContainer().remove(key);
+                player.sendMessage(miniMessage.deserialize("<green>Announcements enabled!"));
+            } else {
+                player.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 1);
+                player.sendMessage(miniMessage.deserialize("<red>Announcements disabled!"));
+            }
+        }
+        return true;
     }
 }

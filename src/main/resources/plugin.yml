@@ -4,3 +4,10 @@ main: com.semivanilla.announcer.Announcer
 api-version: 1.13
 softdepend:
   - 'floodgate'
+commands:
+  announcer:
+    description: 'Announcer command'
+    usage: /announcer
+  toggleannouncements:
+    description: 'Toggle announcements'
+    usage: /toggleannouncements
