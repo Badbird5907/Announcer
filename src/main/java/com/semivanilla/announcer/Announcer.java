@@ -12,6 +12,7 @@ import net.badbird5907.blib.bLib;
 import net.badbird5907.blib.util.Tasks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -36,7 +37,7 @@ public final class Announcer extends JavaPlugin {
     private FileConfiguration config = null;
 
     @Getter
-    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static MiniMessage miniMessage;
     private NamespacedKey key;
 
     @Override
@@ -51,6 +52,9 @@ public final class Announcer extends JavaPlugin {
             getDataFolder().mkdir();
         configManager = new ConfigManager();
         configManager.init();
+        MiniMessage.Builder miniMessageBuilder = MiniMessage.builder()
+                .tags(TagResolver.builder().resolvers(TagResolver.standard()).resolvers(configManager.getResolvers()).build());
+        miniMessage = miniMessageBuilder.build();
         Bukkit.getLogger().info("Loaded (" + ConfigManager.getMessages().size() + ") messages!");
         Bukkit.getPluginManager().registerEvents(new MainListener(), this);
         key = NamespacedKey.fromString("announcements_disable", this);

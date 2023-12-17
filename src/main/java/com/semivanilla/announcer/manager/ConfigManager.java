@@ -3,11 +3,16 @@ package com.semivanilla.announcer.manager;
 import com.semivanilla.announcer.Announcer;
 import com.semivanilla.announcer.object.JoinConfig;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +39,8 @@ public class ConfigManager {
     @Getter
     private static boolean enableBungee = false;
 
+    private static Map<String, Component> customTags;
+
     public static String getNextMessage() {
         if (messages.isEmpty()) return null;
         if (!randomOrder) {
@@ -52,6 +59,22 @@ public class ConfigManager {
             plugin.saveDefaultConfig();
         }
         loadConfig();
+    }
+
+    public List<TagResolver> getResolvers() {
+        MiniMessage miniMessage = MiniMessage.miniMessage(); // use default
+        List<TagResolver> resolvers = new ArrayList<>();
+        for (String key : getConfig().getKeys(true)) {
+            if (key.startsWith("custom-tags.")) {
+                String tag = key.replace("custom-tags.", "");
+                String value = getConfig().getString(key);
+                if (value == null) continue;
+                resolvers.add(TagResolver.resolver(tag, (args, context) -> {
+                    return Tag.inserting(miniMessage.deserialize(value));
+                }));
+            }
+        }
+        return resolvers;
     }
 
     public void loadConfig() {

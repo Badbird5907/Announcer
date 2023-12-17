@@ -54,6 +54,9 @@ new-player:
     pitch: 1
     source: master
     volume: 0.8
+custom-tags:
+  tip-line: '<gradient:yellow:red:yellow><strikethrough>                              </strikethrough><bold> TIP: </bold><strikethrough>                              <reset>'
+  line: '<gradient:yellow:red:yellow><strikethrough>                                                                    <reset>'
 messages:
   -
     - '<gradient:yellow:red:yellow><strikethrough>                                                                 <reset>'
