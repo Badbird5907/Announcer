@@ -6,7 +6,6 @@ import com.semivanilla.announcer.listener.MainListener;
 import com.semivanilla.announcer.manager.ConfigManager;
 import com.semivanilla.announcer.manager.TitleManager;
 import com.semivanilla.announcer.object.JoinConfig;
-import com.semivanilla.announcer.object.TitleInfo;
 import com.semivanilla.announcer.object.TitleUpdateRunnable;
 import lombok.Getter;
 import net.badbird5907.blib.bLib;
@@ -19,7 +18,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 

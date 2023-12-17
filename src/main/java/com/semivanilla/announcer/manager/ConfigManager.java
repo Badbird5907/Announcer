@@ -123,10 +123,10 @@ public class ConfigManager {
                 getConfig().getString("returning-player.title-settings.bedrock.subtitle")
                 );
         gradientSpeed = getConfig().getDouble("gradient.speed");
-        color1 = getConfig().getString("gradient.color-1");
-        color2 = getConfig().getString("gradient.color-2");
-        color3 = getConfig().getString("gradient.color-3");
-        enableBungee = getConfig().getBoolean("bungee.enable", true);
+        color1 = getConfig().getString("gradient.color.1");
+        color2 = getConfig().getString("gradient.color.2");
+        color3 = getConfig().getString("gradient.color.3");
+        enableBungee = getConfig().getBoolean("bungee.enable", false);
     }
 
     public FileConfiguration getConfig() {

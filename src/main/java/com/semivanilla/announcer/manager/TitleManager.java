@@ -5,6 +5,7 @@ import com.semivanilla.announcer.animation.Animation;
 import com.semivanilla.announcer.animation.impl.GradientAnimation;
 import com.semivanilla.announcer.object.TitleInfo;
 import lombok.Getter;
+import net.badbird5907.blib.util.Logger;
 import net.badbird5907.blib.util.Tasks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,14 +23,14 @@ public class TitleManager {
     private static final Map<UUID, TitleInfo> titles = new ConcurrentHashMap<>();
 
     public static void showTitle(Player player, String title, String subtitle, long fadeIn, int stay, long fadeOut, boolean animate) {
-        final String rawTitle = title, rawSubtitle = subtitle;
+        Logger.debug("Showing title to " + player.getName() + " title: " + title + " subtitle: " + subtitle + " fadeIn: " + fadeIn + " stay: " + stay + " fadeOut: " + fadeOut);
         if (animate) {
             Animation animation = new GradientAnimation();
             Component title1 = parseTitle(title, animation);
             Component subtitle1 = parseTitle(subtitle, animation);
             showTitle(player, title1, subtitle1, fadeIn, stay, fadeOut);
             long ticksLeft = stay * 20L;
-            TitleInfo info = new TitleInfo(title, subtitle, rawTitle, rawSubtitle, animation, ticksLeft, player.getUniqueId(), stay, fadeIn, fadeOut);
+            TitleInfo info = new TitleInfo(title, subtitle, title, subtitle, animation, ticksLeft, player.getUniqueId(), stay, fadeIn, fadeOut);
             titles.put(player.getUniqueId(), info);
         } else {
             Component title1 = parseTitle(title);
@@ -36,7 +38,7 @@ public class TitleManager {
             showTitle(player, title1, subtitle1, fadeIn, stay, fadeOut);
             Tasks.runLater(() -> { // We need to send the title twice because bedrock or geyser bug
                 showTitle(player, title1, subtitle1, fadeIn, stay, fadeOut);
-            },5l);
+            }, 5L);
         }
     }
 
@@ -70,8 +72,13 @@ public class TitleManager {
         return parseTitle(title);
     }
 
+    private static final Map<String, Component> titleCache = new HashMap<>();
     public static Component parseTitle(String title) {
-        return Announcer.getMiniMessage().deserialize(title);
+        if (titleCache.containsKey(title)) return titleCache.get(title);
+        // minimessage may be expensive, so we'll cache the result
+        Component deserialize = Announcer.getMiniMessage().deserialize(title);
+        titleCache.put(title, deserialize);
+        return deserialize;
     }
 
     public static void showTitle(Player player, Component title, Component subtitle, long fadeIn, int stay, long fadeOut) {

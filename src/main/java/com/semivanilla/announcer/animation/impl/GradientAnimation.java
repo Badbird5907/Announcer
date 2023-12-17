@@ -16,10 +16,10 @@ public class GradientAnimation implements Animation {
 
     @Override
     public String nextValue() {
-        if (phase >= 1f) {
-            phase = -1f;
+        if (phase >= MAX) {
+            phase = MIN;
         }
-        phase += ConfigManager.getGradientSpeed();
+        phase += (float) ConfigManager.getGradientSpeed();
         return getValue();
     }
 }

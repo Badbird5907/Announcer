@@ -5,12 +5,13 @@ interval: 15
 interval-time-unit: 'MINUTES'
 random-message-order: true
 gradient:
-  color-1: 'yellow'
-  color-2: 'red'
-  color-3: 'yellow'
-  speed: 0.1
+  color:
+    1: 'yellow'
+    2: 'red'
+    3: 'yellow'
+  speed: 0.05
 bungee:
-  enable: true
+  enable: false
 returning-player:
   title-settings:
     enabled: true
